@@ -40,7 +40,6 @@ const MovieSchema: Schema<IMovie> = new Schema(
       type: String,
       required: [true, "Movie title is required"],
       trim: true,
-      index: true,
     },
     description: {
       type: String,
@@ -91,7 +90,6 @@ const MovieSchema: Schema<IMovie> = new Schema(
       type: String,
       enum: Object.values(MovieStatus),
       default: MovieStatus.COMING_SOON,
-      index: true,
     },
     avgRating: {
       type: Number,
@@ -111,7 +109,7 @@ const MovieSchema: Schema<IMovie> = new Schema(
 // ----------------------
 // Indexes
 // ----------------------
-MovieSchema.index({ title: "text" });
+MovieSchema.index({ title: "text" }, { language_override: "dummy" });
 MovieSchema.index({ status: 1 });
 MovieSchema.index({ releaseDate: -1 });
 

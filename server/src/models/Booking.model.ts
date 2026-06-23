@@ -55,19 +55,16 @@ const BookingSchema: Schema<IBooking> = new Schema(
       type: Schema.Types.ObjectId,
       ref: "User",
       required: [true, "User reference is required"],
-      index: true,
     },
     showtimeId: {
       type: Schema.Types.ObjectId,
       ref: "Showtime",
       required: [true, "Showtime reference is required"],
-      index: true,
     },
     movieId: {
       type: Schema.Types.ObjectId,
       ref: "Movie",
       required: [true, "Movie reference is required"],
-      index: true,
     },
     screenId: {
       type: Schema.Types.ObjectId,
@@ -117,7 +114,6 @@ const BookingSchema: Schema<IBooking> = new Schema(
       type: String,
       enum: Object.values(PaymentStatus),
       default: PaymentStatus.PENDING,
-      index: true,
     },
     paymentMethod: {
       type: String,
@@ -131,7 +127,6 @@ const BookingSchema: Schema<IBooking> = new Schema(
       type: String,
       enum: Object.values(BookingStatus),
       default: BookingStatus.CONFIRMED,
-      index: true,
     },
     bookingDate: {
       type: Date,
@@ -140,7 +135,6 @@ const BookingSchema: Schema<IBooking> = new Schema(
     showDate: {
       type: Date,
       required: [true, "Show date is required"],
-      index: true,
     },
     showTime: {
       type: String,

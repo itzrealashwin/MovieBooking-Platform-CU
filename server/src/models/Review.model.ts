@@ -21,13 +21,11 @@ const ReviewSchema: Schema<IReview> = new Schema(
       type: Schema.Types.ObjectId,
       ref: "User",
       required: [true, "User reference is required"],
-      index: true,
     },
     movieId: {
       type: Schema.Types.ObjectId,
       ref: "Movie",
       required: [true, "Movie reference is required"],
-      index: true,
     },
     rating: {
       type: Number,

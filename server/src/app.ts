@@ -8,6 +8,11 @@ import { requestLogger } from "./middleware/logger.middleware";
 // Routes
 import authRoutes from "./routes/auth.routes";
 import movieRoutes from "./routes/movie.routes";
+import bookingRoutes from "./routes/booking.routes";
+import theatreRoutes from "./routes/theatre.routes";
+import showtimeRoutes from "./routes/showtime.routes";
+import seatRoutes from "./routes/seat.routes";
+import paymentRoutes from "./routes/payment.routes";
 
 const app = express();
 
@@ -39,6 +44,11 @@ app.get(["/health", "/api/health"], (req: Request, res: Response) => {
 // ----------------------
 app.use("/api/auth", authRoutes);
 app.use("/api/movies", movieRoutes);
+app.use("/api/bookings", bookingRoutes);
+app.use("/api/theatres", theatreRoutes);
+app.use("/api/showtimes", showtimeRoutes);
+app.use("/api/seats", seatRoutes);
+app.use("/api/payments", paymentRoutes);
 
 // ----------------------
 // Error Handler (should be last)

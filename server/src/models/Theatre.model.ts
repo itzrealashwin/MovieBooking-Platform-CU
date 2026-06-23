@@ -32,7 +32,6 @@ const TheatreSchema: Schema<ITheatre> = new Schema(
       type: String,
       required: [true, "City is required"],
       trim: true,
-      index: true,
     },
     address: {
       type: String,

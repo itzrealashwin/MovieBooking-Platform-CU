@@ -38,24 +38,20 @@ const ShowtimeSchema: Schema<IShowtime> = new Schema(
       type: Schema.Types.ObjectId,
       ref: "Screen",
       required: [true, "Screen reference is required"],
-      index: true,
     },
     movieId: {
       type: Schema.Types.ObjectId,
       ref: "Movie",
       required: [true, "Movie reference is required"],
-      index: true,
     },
     theatreId: {
       type: Schema.Types.ObjectId,
       ref: "Theatre",
       required: [true, "Theatre reference is required"],
-      index: true,
     },
     showDate: {
       type: Date,
       required: [true, "Show date is required"],
-      index: true,
     },
     showTime: {
       type: String,
@@ -89,7 +85,6 @@ const ShowtimeSchema: Schema<IShowtime> = new Schema(
       type: String,
       enum: Object.values(ShowtimeStatus),
       default: ShowtimeStatus.UPCOMING,
-      index: true,
     },
   },
   { timestamps: true }

@@ -22,6 +22,7 @@ export const protect = (req: Request, res: Response, next: NextFunction): void =
 
   try {
     const decoded = verifyAccessToken(token);
+
     req.user = { userId: decoded.userId, role: decoded.role as UserRole };
     next();
   } catch (error) {

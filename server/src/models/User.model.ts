@@ -83,7 +83,6 @@ const UserSchema: Schema<IUser> = new Schema(
 // ----------------------
 // Indexes
 // ----------------------
-UserSchema.index({ email: 1 }, { unique: true });
 
 // ----------------------
 // Pre-save Hook: Hash Password

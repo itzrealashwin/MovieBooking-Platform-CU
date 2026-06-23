@@ -36,13 +36,11 @@ const PaymentSchema: Schema<IPayment> = new Schema(
       ref: "Booking",
       required: [true, "Booking reference is required"],
       unique: true,
-      index: true,
     },
     userId: {
       type: Schema.Types.ObjectId,
       ref: "User",
       required: [true, "User reference is required"],
-      index: true,
     },
     amount: {
       type: Number,
@@ -57,7 +55,6 @@ const PaymentSchema: Schema<IPayment> = new Schema(
       type: String,
       enum: Object.values(PaymentTxnStatus),
       default: PaymentTxnStatus.PENDING,
-      index: true,
     },
     method: {
       type: String,

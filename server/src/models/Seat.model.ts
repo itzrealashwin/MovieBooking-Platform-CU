@@ -31,13 +31,11 @@ const SeatSchema: Schema<ISeat> = new Schema(
       type: Schema.Types.ObjectId,
       ref: "Showtime",
       required: [true, "Showtime reference is required"],
-      index: true,
     },
     screenId: {
       type: Schema.Types.ObjectId,
       ref: "Screen",
       required: [true, "Screen reference is required"],
-      index: true,
     },
     seatNumber: {
       type: String,
@@ -55,7 +53,6 @@ const SeatSchema: Schema<ISeat> = new Schema(
       type: String,
       enum: Object.values(SeatStatus),
       default: SeatStatus.AVAILABLE,
-      index: true,
     },
   },
   { timestamps: true }

@@ -75,7 +75,6 @@ const ScreenSchema: Schema<IScreen> = new Schema(
       type: Schema.Types.ObjectId,
       ref: "Theatre",
       required: [true, "Theatre reference is required"],
-      index: true,
     },
     screenNumber: {
       type: Number,

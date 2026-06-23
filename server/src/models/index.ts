@@ -33,4 +33,5 @@ export { ShowtimeStatus } from "./Showtime.model";
 export { SeatStatus } from "./Seat.model";
 export { PaymentStatus, BookingStatus } from "./Booking.model";
 export { UserRole } from "./User.model";
+
 export { PaymentTxnStatus } from "./Payment.model";
