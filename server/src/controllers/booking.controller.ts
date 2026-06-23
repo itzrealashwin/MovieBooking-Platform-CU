@@ -109,3 +109,27 @@ export const cancelBooking = asyncHandler(async (req: Request, res: Response) =>
         message: "Booking cancelled successfully",
     });
 });
+
+// @desc Get user's own bookings
+export const getUserBookings = asyncHandler(async (req: Request, res: Response) => {
+  const userId = req.user?.userId;
+  const bookings = await Booking.find({ userId }).populate('showtimeId');
+  res.status(200).json({ success: true, data: bookings });
+});
+
+// @desc Get a single booking by ID (only owner)
+export const getBookingById = asyncHandler(async (req: Request, res: Response) => {
+  const { id } = req.params as { id: string };
+  const userId = req.user?.userId as string;
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    return res.status(400).json({ success: false, message: 'Invalid booking ID' });
+  }
+  const booking = await Booking.findById(id).populate('showtimeId');
+  if (!booking) {
+    return res.status(404).json({ success: false, message: 'Booking not found' });
+  }
+  if (booking.userId.toString() !== userId) {
+    return res.status(403).json({ success: false, message: 'Access denied' });
+  }
+  res.status(200).json({ success: true, data: booking });
+});

@@ -8,7 +8,7 @@ import Theatre from "../models/Theatre.model";
 // @route   GET /api/theatres/:theatreId/screens
 // @access  Public
 export const getScreensByTheatre = asyncHandler(async (req: Request, res: Response) => {
-    const { theatreId } = req.params;
+    const { theatreId } = req.params as { theatreId: string };
 
     if (!mongoose.Types.ObjectId.isValid(theatreId)) {
         res.status(400).json({ success: false, message: "Invalid theatre ID" });
@@ -27,7 +27,7 @@ export const getScreensByTheatre = asyncHandler(async (req: Request, res: Respon
 // @route   POST /api/theatres/:theatreId/screens
 // @access  Admin
 export const createScreen = asyncHandler(async (req: Request, res: Response) => {
-    const { theatreId } = req.params;
+    const { theatreId } = req.params as { theatreId: string };
     const { screenNumber, screenName, capacity, seatMatrix, formats } = req.body;
 
     if (!mongoose.Types.ObjectId.isValid(theatreId)) {
@@ -36,9 +36,9 @@ export const createScreen = asyncHandler(async (req: Request, res: Response) => 
     }
 
     if (!screenNumber || !capacity || !seatMatrix) {
-        res.status(400).json({ 
-            success: false, 
-            message: "Please provide screenNumber, capacity, and seatMatrix" 
+        res.status(400).json({
+            success: false,
+            message: "Please provide screenNumber, capacity, and seatMatrix"
         });
         return;
     }

@@ -229,3 +229,27 @@ export const verifyPayment = asyncHandler(async (req: Request, res: Response) =>
         },
     });
 });
+
+// @desc    Get payment status for a booking
+// @route   GET /api/payments/:bookingId
+// @access  Protected
+export const getPaymentStatus = asyncHandler(async (req: Request, res: Response) => {
+  const { bookingId } = req.params;
+  const userId = req.user?.userId;
+
+  if (!bookingId) {
+    return res.status(400).json({ success: false, message: "Missing bookingId" });
+  }
+
+  const payment = await Payment.findOne({ bookingId }).populate('bookingId');
+  if (!payment) {
+    return res.status(404).json({ success: false, message: "Payment not found" });
+  }
+
+  // Ensure the requester owns the booking
+  if ((payment as any).bookingId.userId.toString() !== userId) {
+    return res.status(403).json({ success: false, message: "Access denied" });
+  }
+
+  res.status(200).json({ success: true, data: payment });
+});
