@@ -1,0 +1,759 @@
+{
+	"info": {
+		"_postman_id": "movie-booking-platform-cu-full",
+		"name": "MovieBooking Platform CU — Full API Suite",
+		"description": "Complete API test suite for the MovieBooking Platform. Covers Auth, Movies, Theatres, Screens, Showtimes, Seats (Redis locking), Bookings, and Payments.\n\n**Setup:**\n1. Import this collection\n2. Set the `baseUrl` variable (default: http://localhost:5000)\n3. Run '1. Register' then '2. Login' — the token auto-populates\n4. Run '3. Admin Login' for admin-only routes\n5. Follow the numbered folders in order for a full lifecycle test",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"variable": [
+		{ "key": "baseUrl", "value": "http://localhost:5000", "type": "string" },
+		{ "key": "accessToken", "value": "", "type": "string" },
+		{ "key": "adminToken", "value": "", "type": "string" },
+		{ "key": "refreshToken", "value": "", "type": "string" },
+		{ "key": "userId", "value": "", "type": "string" },
+		{ "key": "movieId", "value": "", "type": "string" },
+		{ "key": "theatreId", "value": "", "type": "string" },
+		{ "key": "screenId", "value": "", "type": "string" },
+		{ "key": "showtimeId", "value": "", "type": "string" },
+		{ "key": "bookingId", "value": "", "type": "string" },
+		{ "key": "paymentTransactionId", "value": "", "type": "string" }
+	],
+	"item": [
+		{
+			"name": "0. Health Check",
+			"item": [
+				{
+					"name": "Health Check",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": { "raw": "{{baseUrl}}/api/health", "host": ["{{baseUrl}}"], "path": ["api", "health"] }
+					}
+				}
+			]
+		},
+		{
+			"name": "1. Auth",
+			"item": [
+				{
+					"name": "Register User",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 201) {",
+									"  const body = pm.response.json();",
+									"  if (body.data && body.data.accessToken) {",
+									"    pm.collectionVariables.set('accessToken', body.data.accessToken);",
+									"  }",
+									"  if (body.data && body.data.refreshToken) {",
+									"    pm.collectionVariables.set('refreshToken', body.data.refreshToken);",
+									"  }",
+									"  if (body.data && body.data.user && body.data.user._id) {",
+									"    pm.collectionVariables.set('userId', body.data.user._id);",
+									"  }",
+									"}"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [{ "key": "Content-Type", "value": "application/json" }],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Test User\",\n  \"email\": \"testuser@example.com\",\n  \"password\": \"Test@1234\",\n  \"phone\": \"9876543210\"\n}"
+						},
+						"url": { "raw": "{{baseUrl}}/api/auth/register", "host": ["{{baseUrl}}"], "path": ["api", "auth", "register"] }
+					}
+				},
+				{
+					"name": "Login User",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"  const body = pm.response.json();",
+									"  if (body.data && body.data.accessToken) {",
+									"    pm.collectionVariables.set('accessToken', body.data.accessToken);",
+									"  }",
+									"  if (body.data && body.data.refreshToken) {",
+									"    pm.collectionVariables.set('refreshToken', body.data.refreshToken);",
+									"  }",
+									"  if (body.data && body.data.user && body.data.user._id) {",
+									"    pm.collectionVariables.set('userId', body.data.user._id);",
+									"  }",
+									"}"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [{ "key": "Content-Type", "value": "application/json" }],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"testuser@example.com\",\n  \"password\": \"Test@1234\"\n}"
+						},
+						"url": { "raw": "{{baseUrl}}/api/auth/login", "host": ["{{baseUrl}}"], "path": ["api", "auth", "login"] }
+					}
+				},
+				{
+					"name": "Login Admin",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"  const body = pm.response.json();",
+									"  if (body.data && body.data.accessToken) {",
+									"    pm.collectionVariables.set('adminToken', body.data.accessToken);",
+									"  }",
+									"}"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [{ "key": "Content-Type", "value": "application/json" }],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"admin@example.com\",\n  \"password\": \"Admin@1234\"\n}"
+						},
+						"url": { "raw": "{{baseUrl}}/api/auth/login", "host": ["{{baseUrl}}"], "path": ["api", "auth", "login"] }
+					}
+				},
+				{
+					"name": "Refresh Token",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"  const body = pm.response.json();",
+									"  if (body.data && body.data.accessToken) {",
+									"    pm.collectionVariables.set('accessToken', body.data.accessToken);",
+									"  }",
+									"  if (body.data && body.data.refreshToken) {",
+									"    pm.collectionVariables.set('refreshToken', body.data.refreshToken);",
+									"  }",
+									"}"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [{ "key": "Content-Type", "value": "application/json" }],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"refreshToken\": \"{{refreshToken}}\"\n}"
+						},
+						"url": { "raw": "{{baseUrl}}/api/auth/refresh-token", "host": ["{{baseUrl}}"], "path": ["api", "auth", "refresh-token"] }
+					}
+				}
+			]
+		},
+		{
+			"name": "2. Movies (Admin)",
+			"item": [
+				{
+					"name": "Create Movie",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 201) {",
+									"  const body = pm.response.json();",
+									"  if (body.data && body.data._id) {",
+									"    pm.collectionVariables.set('movieId', body.data._id);",
+									"  }",
+									"}"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{ "key": "Content-Type", "value": "application/json" },
+							{ "key": "Authorization", "value": "Bearer {{adminToken}}" }
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"title\": \"Inception\",\n  \"description\": \"A thief who steals corporate secrets through the use of dream-sharing technology.\",\n  \"genre\": [\"Sci-Fi\", \"Action\", \"Thriller\"],\n  \"releaseDate\": \"2026-07-16\",\n  \"duration\": 148,\n  \"rating\": \"PG-13\",\n  \"cast\": [\"Leonardo DiCaprio\", \"Joseph Gordon-Levitt\", \"Elliot Page\"],\n  \"director\": \"Christopher Nolan\",\n  \"language\": [\"English\", \"Hindi\"],\n  \"posterUrl\": \"https://example.com/inception-poster.jpg\",\n  \"bannerUrl\": \"https://example.com/inception-banner.jpg\",\n  \"trailerUrl\": \"https://example.com/inception-trailer.mp4\"\n}"
+						},
+						"url": { "raw": "{{baseUrl}}/api/movies", "host": ["{{baseUrl}}"], "path": ["api", "movies"] }
+					}
+				},
+				{
+					"name": "Get All Movies",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/movies?page=1&limit=10",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "movies"],
+							"query": [
+								{ "key": "page", "value": "1" },
+								{ "key": "limit", "value": "10" },
+								{ "key": "genre", "value": "Sci-Fi", "disabled": true },
+								{ "key": "language", "value": "English", "disabled": true },
+								{ "key": "status", "value": "now_showing", "disabled": true },
+								{ "key": "search", "value": "Inception", "disabled": true }
+							]
+						}
+					}
+				},
+				{
+					"name": "Get Movie By ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": { "raw": "{{baseUrl}}/api/movies/{{movieId}}", "host": ["{{baseUrl}}"], "path": ["api", "movies", "{{movieId}}"] }
+					}
+				},
+				{
+					"name": "Update Movie",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{ "key": "Content-Type", "value": "application/json" },
+							{ "key": "Authorization", "value": "Bearer {{adminToken}}" }
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"status\": \"now_showing\"\n}"
+						},
+						"url": { "raw": "{{baseUrl}}/api/movies/{{movieId}}", "host": ["{{baseUrl}}"], "path": ["api", "movies", "{{movieId}}"] }
+					}
+				},
+				{
+					"name": "Delete Movie (blocked if active showtimes)",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{ "key": "Authorization", "value": "Bearer {{adminToken}}" }
+						],
+						"url": { "raw": "{{baseUrl}}/api/movies/{{movieId}}", "host": ["{{baseUrl}}"], "path": ["api", "movies", "{{movieId}}"] }
+					}
+				}
+			]
+		},
+		{
+			"name": "3. Theatres (Admin)",
+			"item": [
+				{
+					"name": "Create Theatre",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 201) {",
+									"  const body = pm.response.json();",
+									"  if (body.data && body.data._id) {",
+									"    pm.collectionVariables.set('theatreId', body.data._id);",
+									"  }",
+									"}"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{ "key": "Content-Type", "value": "application/json" },
+							{ "key": "Authorization", "value": "Bearer {{adminToken}}" }
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"PVR Phoenix Mall\",\n  \"city\": \"Mumbai\",\n  \"address\": \"Phoenix MarketCity, Kurla West, Mumbai 400070\",\n  \"phoneNumber\": \"+912266889900\",\n  \"amenities\": [\"Parking\", \"Food Court\", \"Dolby Atmos\"],\n  \"basePrice\": 250\n}"
+						},
+						"url": { "raw": "{{baseUrl}}/api/theatres", "host": ["{{baseUrl}}"], "path": ["api", "theatres"] }
+					}
+				},
+				{
+					"name": "Get All Theatres",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/theatres",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "theatres"],
+							"query": [
+								{ "key": "city", "value": "Mumbai", "disabled": true }
+							]
+						}
+					}
+				},
+				{
+					"name": "Get Theatre By ID (with populated screens)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": { "raw": "{{baseUrl}}/api/theatres/{{theatreId}}", "host": ["{{baseUrl}}"], "path": ["api", "theatres", "{{theatreId}}"] }
+					}
+				},
+				{
+					"name": "Update Theatre",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{ "key": "Content-Type", "value": "application/json" },
+							{ "key": "Authorization", "value": "Bearer {{adminToken}}" }
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"amenities\": [\"Parking\", \"Food Court\", \"Dolby Atmos\", \"IMAX\"]\n}"
+						},
+						"url": { "raw": "{{baseUrl}}/api/theatres/{{theatreId}}", "host": ["{{baseUrl}}"], "path": ["api", "theatres", "{{theatreId}}"] }
+					}
+				}
+			]
+		},
+		{
+			"name": "4. Screens (Admin)",
+			"item": [
+				{
+					"name": "Create Screen (+ pushes to Theatre.screens)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 201) {",
+									"  const body = pm.response.json();",
+									"  if (body.data && body.data._id) {",
+									"    pm.collectionVariables.set('screenId', body.data._id);",
+									"  }",
+									"}"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{ "key": "Content-Type", "value": "application/json" },
+							{ "key": "Authorization", "value": "Bearer {{adminToken}}" }
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"screenNumber\": 1,\n  \"screenName\": \"Audi 1 - Dolby Atmos\",\n  \"capacity\": 6,\n  \"seatMatrix\": {\n    \"rows\": 2,\n    \"columns\": 3,\n    \"seats\": [\n      { \"rowLabel\": \"A\", \"seatNumber\": 1, \"type\": \"regular\", \"isAccessible\": false },\n      { \"rowLabel\": \"A\", \"seatNumber\": 2, \"type\": \"regular\", \"isAccessible\": false },\n      { \"rowLabel\": \"A\", \"seatNumber\": 3, \"type\": \"regular\", \"isAccessible\": true },\n      { \"rowLabel\": \"B\", \"seatNumber\": 1, \"type\": \"premium\", \"isAccessible\": false },\n      { \"rowLabel\": \"B\", \"seatNumber\": 2, \"type\": \"premium\", \"isAccessible\": false },\n      { \"rowLabel\": \"B\", \"seatNumber\": 3, \"type\": \"recliner\", \"isAccessible\": false }\n    ]\n  },\n  \"formats\": [\"2D\", \"3D\", \"IMAX\"]\n}"
+						},
+						"url": { "raw": "{{baseUrl}}/api/theatres/{{theatreId}}/screens", "host": ["{{baseUrl}}"], "path": ["api", "theatres", "{{theatreId}}", "screens"] }
+					}
+				},
+				{
+					"name": "Get Screens for Theatre",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": { "raw": "{{baseUrl}}/api/theatres/{{theatreId}}/screens", "host": ["{{baseUrl}}"], "path": ["api", "theatres", "{{theatreId}}", "screens"] }
+					}
+				},
+				{
+					"name": "Verify Theatre.screens populated",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": { "raw": "{{baseUrl}}/api/theatres/{{theatreId}}", "host": ["{{baseUrl}}"], "path": ["api", "theatres", "{{theatreId}}"] }
+					}
+				}
+			]
+		},
+		{
+			"name": "5. Showtimes (Admin create, Public read)",
+			"item": [
+				{
+					"name": "Create Showtime (+ generates Seat docs via transaction)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 201) {",
+									"  const body = pm.response.json();",
+									"  if (body.data && body.data._id) {",
+									"    pm.collectionVariables.set('showtimeId', body.data._id);",
+									"  }",
+									"}"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{ "key": "Content-Type", "value": "application/json" },
+							{ "key": "Authorization", "value": "Bearer {{adminToken}}" }
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"screenId\": \"{{screenId}}\",\n  \"movieId\": \"{{movieId}}\",\n  \"theatreId\": \"{{theatreId}}\",\n  \"showDate\": \"2026-07-20\",\n  \"showTime\": \"14:30\",\n  \"format\": \"2D\",\n  \"language\": \"English\",\n  \"ticketPrice\": 300\n}"
+						},
+						"url": { "raw": "{{baseUrl}}/api/showtimes", "host": ["{{baseUrl}}"], "path": ["api", "showtimes"] }
+					}
+				},
+				{
+					"name": "Create Overlapping Showtime (should 409)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{ "key": "Content-Type", "value": "application/json" },
+							{ "key": "Authorization", "value": "Bearer {{adminToken}}" }
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"screenId\": \"{{screenId}}\",\n  \"movieId\": \"{{movieId}}\",\n  \"theatreId\": \"{{theatreId}}\",\n  \"showDate\": \"2026-07-20\",\n  \"showTime\": \"15:00\",\n  \"format\": \"3D\",\n  \"language\": \"Hindi\",\n  \"ticketPrice\": 350\n}"
+						},
+						"url": { "raw": "{{baseUrl}}/api/showtimes", "host": ["{{baseUrl}}"], "path": ["api", "showtimes"] }
+					}
+				},
+				{
+					"name": "Get All Showtimes",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/showtimes",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "showtimes"],
+							"query": [
+								{ "key": "movieId", "value": "{{movieId}}", "disabled": true },
+								{ "key": "theatreId", "value": "{{theatreId}}", "disabled": true },
+								{ "key": "date", "value": "2026-07-20", "disabled": true }
+							]
+						}
+					}
+				},
+				{
+					"name": "Get Seats for Showtime (grouped by row)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": { "raw": "{{baseUrl}}/api/showtimes/{{showtimeId}}/seats", "host": ["{{baseUrl}}"], "path": ["api", "showtimes", "{{showtimeId}}", "seats"] }
+					}
+				}
+			]
+		},
+		{
+			"name": "6. Seat Locking (Redis)",
+			"item": [
+				{
+					"name": "Lock Seats (User 1)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{ "key": "Content-Type", "value": "application/json" },
+							{ "key": "Authorization", "value": "Bearer {{accessToken}}" }
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"showtimeId\": \"{{showtimeId}}\",\n  \"seatNumbers\": [\"A1\", \"A2\"]\n}"
+						},
+						"url": { "raw": "{{baseUrl}}/api/seats/lock", "host": ["{{baseUrl}}"], "path": ["api", "seats", "lock"] }
+					}
+				},
+				{
+					"name": "Lock Same Seats Again (same user — TTL refresh, should 200)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{ "key": "Content-Type", "value": "application/json" },
+							{ "key": "Authorization", "value": "Bearer {{accessToken}}" }
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"showtimeId\": \"{{showtimeId}}\",\n  \"seatNumbers\": [\"A1\", \"A2\"]\n}"
+						},
+						"url": { "raw": "{{baseUrl}}/api/seats/lock", "host": ["{{baseUrl}}"], "path": ["api", "seats", "lock"] }
+					}
+				},
+				{
+					"name": "Lock Same Seats (different user — should 409)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{ "key": "Content-Type", "value": "application/json" },
+							{ "key": "Authorization", "value": "Bearer {{adminToken}}" }
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"showtimeId\": \"{{showtimeId}}\",\n  \"seatNumbers\": [\"A1\", \"A2\"]\n}"
+						},
+						"url": { "raw": "{{baseUrl}}/api/seats/lock", "host": ["{{baseUrl}}"], "path": ["api", "seats", "lock"] }
+					}
+				},
+				{
+					"name": "Verify Seats Show as Locked (effectiveStatus)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": { "raw": "{{baseUrl}}/api/showtimes/{{showtimeId}}/seats", "host": ["{{baseUrl}}"], "path": ["api", "showtimes", "{{showtimeId}}", "seats"] }
+					}
+				},
+				{
+					"name": "Extend Lock TTL",
+					"request": {
+						"method": "POST",
+						"header": [
+							{ "key": "Content-Type", "value": "application/json" },
+							{ "key": "Authorization", "value": "Bearer {{accessToken}}" }
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"showtimeId\": \"{{showtimeId}}\",\n  \"seatNumbers\": [\"A1\", \"A2\"]\n}"
+						},
+						"url": { "raw": "{{baseUrl}}/api/seats/extend-lock", "host": ["{{baseUrl}}"], "path": ["api", "seats", "extend-lock"] }
+					}
+				},
+				{
+					"name": "Unlock Seats",
+					"request": {
+						"method": "POST",
+						"header": [
+							{ "key": "Content-Type", "value": "application/json" },
+							{ "key": "Authorization", "value": "Bearer {{accessToken}}" }
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"showtimeId\": \"{{showtimeId}}\",\n  \"seatNumbers\": [\"A1\", \"A2\"]\n}"
+						},
+						"url": { "raw": "{{baseUrl}}/api/seats/unlock", "host": ["{{baseUrl}}"], "path": ["api", "seats", "unlock"] }
+					}
+				}
+			]
+		},
+		{
+			"name": "7. Full Booking Lifecycle (Happy Path)",
+			"description": "Run these IN ORDER to simulate: lock → book → pay → verify → confirm",
+			"item": [
+				{
+					"name": "Step 1: Lock Seats",
+					"request": {
+						"method": "POST",
+						"header": [
+							{ "key": "Content-Type", "value": "application/json" },
+							{ "key": "Authorization", "value": "Bearer {{accessToken}}" }
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"showtimeId\": \"{{showtimeId}}\",\n  \"seatNumbers\": [\"B1\", \"B2\"]\n}"
+						},
+						"url": { "raw": "{{baseUrl}}/api/seats/lock", "host": ["{{baseUrl}}"], "path": ["api", "seats", "lock"] }
+					}
+				},
+				{
+					"name": "Step 2: Create Booking (pending)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 201) {",
+									"  const body = pm.response.json();",
+									"  if (body.data && body.data._id) {",
+									"    pm.collectionVariables.set('bookingId', body.data._id);",
+									"  }",
+									"}"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{ "key": "Content-Type", "value": "application/json" },
+							{ "key": "Authorization", "value": "Bearer {{accessToken}}" }
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"showtimeId\": \"{{showtimeId}}\",\n  \"selectedSeats\": [\"B1\", \"B2\"]\n}"
+						},
+						"url": { "raw": "{{baseUrl}}/api/bookings", "host": ["{{baseUrl}}"], "path": ["api", "bookings"] }
+					}
+				},
+				{
+					"name": "Step 3: Initiate Payment",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 201) {",
+									"  const body = pm.response.json();",
+									"  if (body.data && body.data.transactionId) {",
+									"    pm.collectionVariables.set('paymentTransactionId', body.data.transactionId);",
+									"  }",
+									"}"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{ "key": "Content-Type", "value": "application/json" },
+							{ "key": "Authorization", "value": "Bearer {{accessToken}}" }
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"bookingId\": \"{{bookingId}}\",\n  \"method\": \"credit_card\"\n}"
+						},
+						"url": { "raw": "{{baseUrl}}/api/payments/initiate", "host": ["{{baseUrl}}"], "path": ["api", "payments", "initiate"] }
+					}
+				},
+				{
+					"name": "Step 4: Verify Payment (SUCCESS)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{ "key": "Content-Type", "value": "application/json" },
+							{ "key": "Authorization", "value": "Bearer {{accessToken}}" }
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"bookingId\": \"{{bookingId}}\",\n  \"paymentSuccess\": true\n}"
+						},
+						"url": { "raw": "{{baseUrl}}/api/payments/verify", "host": ["{{baseUrl}}"], "path": ["api", "payments", "verify"] }
+					}
+				},
+				{
+					"name": "Step 5: Verify Seats Now 'occupied'",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": { "raw": "{{baseUrl}}/api/showtimes/{{showtimeId}}/seats", "host": ["{{baseUrl}}"], "path": ["api", "showtimes", "{{showtimeId}}", "seats"] }
+					}
+				}
+			]
+		},
+		{
+			"name": "8. Payment Failure Path",
+			"description": "Tests that a failed payment releases Redis locks and marks booking as failed",
+			"item": [
+				{
+					"name": "Lock Seats for Failure Test",
+					"request": {
+						"method": "POST",
+						"header": [
+							{ "key": "Content-Type", "value": "application/json" },
+							{ "key": "Authorization", "value": "Bearer {{accessToken}}" }
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"showtimeId\": \"{{showtimeId}}\",\n  \"seatNumbers\": [\"A3\"]\n}"
+						},
+						"url": { "raw": "{{baseUrl}}/api/seats/lock", "host": ["{{baseUrl}}"], "path": ["api", "seats", "lock"] }
+					}
+				},
+				{
+					"name": "Create Booking (for failure test)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 201) {",
+									"  const body = pm.response.json();",
+									"  if (body.data && body.data._id) {",
+									"    pm.collectionVariables.set('bookingId', body.data._id);",
+									"  }",
+									"}"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{ "key": "Content-Type", "value": "application/json" },
+							{ "key": "Authorization", "value": "Bearer {{accessToken}}" }
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"showtimeId\": \"{{showtimeId}}\",\n  \"selectedSeats\": [\"A3\"]\n}"
+						},
+						"url": { "raw": "{{baseUrl}}/api/bookings", "host": ["{{baseUrl}}"], "path": ["api", "bookings"] }
+					}
+				},
+				{
+					"name": "Initiate Payment (for failure test)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{ "key": "Content-Type", "value": "application/json" },
+							{ "key": "Authorization", "value": "Bearer {{accessToken}}" }
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"bookingId\": \"{{bookingId}}\",\n  \"method\": \"upi\"\n}"
+						},
+						"url": { "raw": "{{baseUrl}}/api/payments/initiate", "host": ["{{baseUrl}}"], "path": ["api", "payments", "initiate"] }
+					}
+				},
+				{
+					"name": "Verify Payment (FAILURE — seats should release)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{ "key": "Content-Type", "value": "application/json" },
+							{ "key": "Authorization", "value": "Bearer {{accessToken}}" }
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"bookingId\": \"{{bookingId}}\",\n  \"paymentSuccess\": false\n}"
+						},
+						"url": { "raw": "{{baseUrl}}/api/payments/verify", "host": ["{{baseUrl}}"], "path": ["api", "payments", "verify"] }
+					}
+				},
+				{
+					"name": "Verify Seats Back to 'available'",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": { "raw": "{{baseUrl}}/api/showtimes/{{showtimeId}}/seats", "host": ["{{baseUrl}}"], "path": ["api", "showtimes", "{{showtimeId}}", "seats"] }
+					}
+				}
+			]
+		},
+		{
+			"name": "9. Booking Cancellation",
+			"item": [
+				{
+					"name": "Cancel Booking (releases occupied seats)",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{ "key": "Content-Type", "value": "application/json" },
+							{ "key": "Authorization", "value": "Bearer {{accessToken}}" }
+						],
+						"url": { "raw": "{{baseUrl}}/api/bookings/{{bookingId}}/cancel", "host": ["{{baseUrl}}"], "path": ["api", "bookings", "{{bookingId}}", "cancel"] }
+					}
+				},
+				{
+					"name": "Cancel Someone Else's Booking (should 403)",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{ "key": "Content-Type", "value": "application/json" },
+							{ "key": "Authorization", "value": "Bearer {{adminToken}}" }
+						],
+						"url": { "raw": "{{baseUrl}}/api/bookings/{{bookingId}}/cancel", "host": ["{{baseUrl}}"], "path": ["api", "bookings", "{{bookingId}}", "cancel"] }
+					}
+				}
+			]
+		}
+	]
+}

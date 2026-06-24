@@ -113,7 +113,11 @@ export const cancelBooking = asyncHandler(async (req: Request, res: Response) =>
 // @desc Get user's own bookings
 export const getUserBookings = asyncHandler(async (req: Request, res: Response) => {
   const userId = req.user?.userId;
-  const bookings = await Booking.find({ userId }).populate('showtimeId');
+  const bookings = await Booking.find({ userId })
+    .populate('showtimeId')
+    .populate('movieId')
+    .populate('theatreId')
+    .sort({ createdAt: -1 });
   res.status(200).json({ success: true, data: bookings });
 });
 
