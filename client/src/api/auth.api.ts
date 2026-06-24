@@ -14,11 +14,10 @@ export const authApi = {
     return response.data;
   },
 
-  register: async (data: { name: string; email: string; password: string }) => {
-    // Note: Adjusting the payload to match what the backend likely expects
+  register: async (data: { firstName: string; lastName: string; email: string; password: string }) => {
     const payload = {
-      firstName: data.name.split(" ")[0],
-      lastName: data.name.split(" ").slice(1).join(" "),
+      firstName: data.firstName,
+      lastName: data.lastName,
       email: data.email,
       password: data.password,
     };

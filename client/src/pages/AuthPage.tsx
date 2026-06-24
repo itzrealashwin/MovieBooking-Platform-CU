@@ -15,7 +15,8 @@ interface LoginFormData {
 }
 
 interface SignupFormData {
-  name: string;
+  firstName: string;
+  lastName: string;
   email: string;
   password: string;
   confirmPassword: string;
@@ -29,7 +30,12 @@ export default function AuthPage() {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
-  const loginForm = useForm<LoginFormData>();
+  const loginForm = useForm<LoginFormData>({
+    defaultValues: {
+      email: "user@example.com",
+      password: "12345"
+    }
+  });
   const signupForm = useForm<SignupFormData>();
 
   const onLogin = async (data: LoginFormData) => {
@@ -46,6 +52,10 @@ export default function AuthPage() {
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const handleDemoLogin = () => {
+    onLogin({ email: "user@example.com", password: "12345" });
   };
 
   const onSignup = async (data: SignupFormData) => {
@@ -118,6 +128,7 @@ export default function AuthPage() {
       >
         <button
           id="tab-login"
+          type="button"
           onClick={() => setActiveTab("login")}
           className={`flex-1 py-2 text-base font-bold text-center rounded-md transition-all duration-200 cursor-pointer border-none outline-none ${
             activeTab === "login"
@@ -129,6 +140,7 @@ export default function AuthPage() {
         </button>
         <button
           id="tab-signup"
+          type="button"
           onClick={() => setActiveTab("signup")}
           className={`flex-1 py-2 text-base font-bold text-center rounded-md transition-all duration-200 cursor-pointer border-none outline-none ${
             activeTab === "signup"
@@ -161,8 +173,16 @@ export default function AuthPage() {
           />
 
           {errorMsg && <p className="text-sm text-red-500 text-center">{errorMsg}</p>}
-          <div className="mt-auto pt-8">
+          <div className="mt-auto pt-8 flex flex-col gap-3">
             <PrimaryButton type="submit" isLoading={isLoading}>Login</PrimaryButton>
+            <button 
+              type="button" 
+              onClick={handleDemoLogin}
+              disabled={isLoading}
+              className="w-full py-3.5 bg-white border border-brand-primary text-brand-primary font-bold text-base rounded-lg outline-none cursor-pointer hover:bg-indigo-50 transition-colors"
+            >
+              Direct Login (Demo)
+            </button>
           </div>
         </form>
       )}
@@ -174,11 +194,18 @@ export default function AuthPage() {
           onSubmit={signupForm.handleSubmit(onSignup)}
           className="w-full flex flex-col gap-5 animate-fadeIn"
         >
-          <InputField
-            placeholder="Name"
-            type="text"
-            {...signupForm.register("name", { required: "Name is required" })}
-          />
+          <div className="flex gap-4 w-full">
+            <InputField
+              placeholder="First Name"
+              type="text"
+              {...signupForm.register("firstName", { required: "First name is required" })}
+            />
+            <InputField
+              placeholder="Last Name"
+              type="text"
+              {...signupForm.register("lastName", { required: "Last name is required" })}
+            />
+          </div>
           <InputField
             placeholder="Email ID"
             type="email"

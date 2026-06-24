@@ -9,6 +9,7 @@ import BookingSummaryPage from "./pages/BookingSummaryPage";
 import CheckoutPage from "./pages/CheckoutPage";
 import PaymentSuccessPage from "./pages/PaymentSuccessPage";
 import MyTicketsPage from "./pages/MyTicketsPage";
+import ProfilePage from "./pages/ProfilePage";
 import "./App.css";
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
@@ -109,6 +110,14 @@ function App() {
             element={
               <ProtectedRoute>
                 <MyTicketsPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/profile"
+            element={
+              <ProtectedRoute>
+                <ProfilePage />
               </ProtectedRoute>
             }
           />

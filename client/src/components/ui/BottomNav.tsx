@@ -103,7 +103,7 @@ export default function BottomNav() {
           <button
             key={item.path}
             id={`nav-${item.label.toLowerCase()}`}
-            onClick={() => item.path === "/tickets" ? navigate("/tickets") : navigate(item.path)}
+            onClick={() => navigate(item.path)}
             className={`flex flex-col items-center gap-1 px-3 py-1 transition-all duration-200 cursor-pointer bg-transparent border-none outline-none ${isActive ? "scale-105" : "opacity-70 hover:opacity-100"
               }`}
           >
