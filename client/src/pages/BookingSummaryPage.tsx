@@ -137,7 +137,7 @@ export default function BookingSummaryPage() {
 
         {/* Screen / Time / Format */}
         <div className="flex items-center gap-4 mb-5 text-sm font-semibold text-brand-text-main">
-          <span>{showtime.screenName || "Screen"}</span>
+          <span>{showtime?.screenId?.screenName || showtime?.screenName || "Screen"}</span>
           <span className="text-[#64748B]">{showtime.showTime}</span>
           <span className="text-[#64748B]">{showtime.format}</span>
         </div>

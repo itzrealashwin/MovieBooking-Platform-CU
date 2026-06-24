@@ -163,7 +163,7 @@ export default function MyTicketsPage() {
                       </div>
                       <div className="text-right">
                         <p className="text-sm font-bold text-brand-text-main">
-                          {showtime?.screenName || "Screen"} - {showtime?.format || "2D"}
+                          {showtime?.screenId?.screenName || showtime?.screenName || "Screen"} - {showtime?.format || "2D"}
                         </p>
                         <p className="text-xs text-[#64748B] mt-1">{showtime?.showTime}</p>
                       </div>

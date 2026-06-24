@@ -106,7 +106,7 @@ export default function SelectSeatsPage() {
         <div className="flex items-center justify-between mt-2">
           <div className="flex items-center gap-3">
             <span className="text-sm font-semibold text-brand-text-main">
-              {showtime?.screenName || "Screen 1"}
+              {showtime?.screenId?.screenName || showtime?.screenName || "Screen 1"}
             </span>
             <span className="text-sm font-semibold text-brand-primary">
               {showtime?.showTime || "10:00 AM"}

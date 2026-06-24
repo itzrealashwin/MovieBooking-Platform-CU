@@ -76,7 +76,7 @@ export default function PaymentSuccessPage() {
                 <p className="text-xs text-[#64748B] mt-1">{formattedDate}</p>
               </div>
               <div className="text-right">
-                <p className="text-sm font-bold text-brand-text-main">{showtime.screenName || "Screen"} - {showtime.format}</p>
+                <p className="text-sm font-bold text-brand-text-main">{showtime?.screenId?.screenName || showtime?.screenName || "Screen"} - {showtime.format}</p>
                 <p className="text-xs text-[#64748B] mt-1">{showtime.showTime}</p>
               </div>
             </div>

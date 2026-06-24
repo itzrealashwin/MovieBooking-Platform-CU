@@ -14,8 +14,8 @@ export const getShowtimes = asyncHandler(async (req: Request, res: Response) => 
 
     const filter: any = {};
 
-    if (movieId) filter.movieId = movieId;
-    if (theatreId) filter.theatreId = theatreId;
+    if (movieId) filter.movieId = new mongoose.Types.ObjectId(movieId as string);
+    if (theatreId) filter.theatreId = new mongoose.Types.ObjectId(theatreId as string);
 
     if (date) {
         const start = new Date(date as string);
@@ -25,7 +25,39 @@ export const getShowtimes = asyncHandler(async (req: Request, res: Response) => 
         filter.showDate = { $gte: start, $lt: end };
     }
 
-    const showtimes = await Showtime.find(filter).populate("movieId theatreId screenId");
+    const showtimes = await Showtime.aggregate([
+        { $match: filter },
+        {
+            $lookup: {
+                from: "movies",
+                localField: "movieId",
+                foreignField: "_id",
+                as: "movieId"
+            }
+        },
+        { $unwind: { path: "$movieId", preserveNullAndEmptyArrays: true } },
+        {
+            $lookup: {
+                from: "theatres",
+                localField: "theatreId",
+                foreignField: "_id",
+                as: "theatreId"
+            }
+        },
+        { $unwind: { path: "$theatreId", preserveNullAndEmptyArrays: true } },
+        {
+            $lookup: {
+                from: "screens",
+                localField: "screenId",
+                foreignField: "_id",
+                as: "screenId"
+            }
+        },
+        { $unwind: { path: "$screenId", preserveNullAndEmptyArrays: true } },
+        {
+            $sort: { showDate: 1, showTime: 1, "screenId._id": 1 }
+        }
+    ]);
 
     res.status(200).json({
         success: true,

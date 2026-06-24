@@ -239,9 +239,12 @@ export default function TheatreSelectionPage() {
                         <button
                           key={i}
                           onClick={() => navigate(`/showtimes/${st._id || st.id}/seats`, { state: { movie, theatre, showtime: st } })}
-                          className="px-3 py-1.5 border border-brand-primary text-brand-primary rounded text-xs font-semibold bg-white hover:bg-brand-primary hover:text-white transition-colors cursor-pointer"
+                          className="flex flex-col items-center px-3 py-1.5 border border-brand-primary text-brand-primary rounded bg-white hover:bg-brand-primary hover:text-white transition-colors cursor-pointer group"
                         >
-                          {st.showTime}
+                          <span className="text-xs font-bold">{st.showTime}</span>
+                          <span className="text-[9px] font-medium opacity-80 mt-0.5 group-hover:text-white">
+                            {st.format || "2D"} • {st.screenId?.screenName || "Screen"}
+                          </span>
                         </button>
                       ))}
                     </div>
