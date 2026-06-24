@@ -54,7 +54,7 @@ export default function SelectSeatsPage() {
   }, [showtimeId]);
 
   const handleToggleSeat = (seat: any) => {
-    if (seat.effectiveStatus === "occupied") return;
+    if (seat.effectiveStatus === "occupied" || seat.effectiveStatus === "locked") return;
 
     const isAlreadySelected = selectedSeats.some((s) => s.seatNumber === seat.seatNumber);
     if (!isAlreadySelected && selectedSeats.length >= MAX_SEATS_PER_BOOKING) {
@@ -144,7 +144,7 @@ export default function SelectSeatsPage() {
                     <div className="flex gap-1.5">
                       {(seats[row] || []).map((seat) => {
                         const isSelected = selectedSeats.some((s) => s.seatNumber === seat.seatNumber);
-                        const isOccupied = seat.effectiveStatus === "occupied";
+                        const isOccupied = seat.effectiveStatus === "occupied" || seat.effectiveStatus === "locked";
                         return (
                           <button
                             key={seat.seatNumber}
@@ -173,7 +173,7 @@ export default function SelectSeatsPage() {
                     <div className="flex gap-1.5">
                       {(seats[row] || []).map((seat) => {
                         const isSelected = selectedSeats.some((s) => s.seatNumber === seat.seatNumber);
-                        const isOccupied = seat.effectiveStatus === "occupied";
+                        const isOccupied = seat.effectiveStatus === "occupied" || seat.effectiveStatus === "locked";
                         return (
                           <button
                             key={seat.seatNumber}

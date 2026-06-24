@@ -24,8 +24,10 @@ export default function TheatreSelectionPage() {
       const d = new Date(today);
       d.setDate(today.getDate() + i);
       const dayStr = d.toLocaleDateString("en-US", { weekday: "short" });
-      const dateNum = d.getDate().toString().padStart(2, "0");
-      const fullDate = d.toISOString().split("T")[0]; // YYYY-MM-DD
+      const year = d.getFullYear();
+      const month = String(d.getMonth() + 1).padStart(2, "0");
+      const dateNum = String(d.getDate()).padStart(2, "0");
+      const fullDate = `${year}-${month}-${dateNum}`;
       return { date: d, dayStr, dateNum, fullDate };
     });
     setDates(nextDates);
