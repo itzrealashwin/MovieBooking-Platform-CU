@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import mongoose from "mongoose";
-import { v4 as uuidv4 } from "uuid";
+import crypto from "crypto";
 import { asyncHandler } from "../middleware/asyncHandler";
 import Payment, { PaymentTxnStatus } from "../models/Payment.model";
 import Booking, { PaymentStatus, BookingStatus } from "../models/Booking.model";
@@ -49,7 +49,7 @@ export const initiatePayment = asyncHandler(async (req: Request, res: Response) 
     }
 
     // Generate a mock transaction ID
-    const transactionId = `TXN_${uuidv4()}`;
+    const transactionId = `TXN_${crypto.randomUUID()}`;
 
     const payment = await Payment.create({
         bookingId,
