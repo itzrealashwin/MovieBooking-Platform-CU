@@ -55,7 +55,7 @@ export const getShowtimes = asyncHandler(async (req: Request, res: Response) => 
         },
         { $unwind: { path: "$screenId", preserveNullAndEmptyArrays: true } },
         {
-            $sort: { showDate: 1, showTime: 1, "screenId._id": 1 }
+            $sort: { showDate: 1, showTime: 1, "screenId.screenNumber": 1 }
         }
     ]);
 
